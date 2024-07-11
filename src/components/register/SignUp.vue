@@ -1,7 +1,7 @@
 <template>
   <div class="bg-[#000000aa] w-full h-[100vh] absolute top-0 left-0">
     <form
-      @submit.prevent="addUser"
+      @submit.prevent="signUp"
       class="flex flex-col gap-5 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#eee] p-6 rounded-lg"
     >
       <img
@@ -53,12 +53,15 @@
 export default {
   data() {
     return {
+      users: null,
       error: "",
       rePassword: "",
       user: {
         name: "",
         email: "",
         password: "",
+        tasks: ["Hi I'm the 1st inCompleted Task"],
+        doneTasks: ["Hi I'm the 1st Completed Task"],
       },
     };
   },
@@ -66,75 +69,65 @@ export default {
     closeTab() {
       this.$router.push({ path: "/" });
     },
-    validateForm() {
-      const username = this.user.name;
-      const email = this.user.email;
-      const password = this.user.password;
-      const rePassword = this.rePassword;
+    signUp() {
+      this.error = null;
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const passwordRegex = /^[A-Za-z0-9]{8,16}$/;
       const usernameRegex = /^[A-Za-z0-9]{8,16}$/;
 
-      if (username.trim() === "" || !usernameRegex.test(username)) {
+      if (!this.user.name || !usernameRegex.test(this.user.name)) {
         this.error =
           "Username must be 8-16 characters long and contain only letters and numbers.";
         return false;
-      } else if (password.trim() === "" || !passwordRegex.test(password)) {
+      } else if (
+        !this.user.password ||
+        !passwordRegex.test(this.user.password)
+      ) {
         this.error =
           "Password must be 8-16 characters long and contain only letters and numbers.";
         return false;
-      } else if (password !== rePassword) {
+      } else if (this.user.password !== this.rePassword) {
         this.error = "Passwords do not match.";
         return false;
-      } else if (!emailRegex.test(email)) {
+      } else if (!emailRegex.test(this.user.email)) {
         this.error = "Please enter a valid email address.";
         return false;
       }
 
-      this.checkIFnewUser();
-      console.log(this.checkIFnewUser());
-
-      // If all validations pass
-      return true;
-    },
-    addUser() {
-      if (this.validateForm()) {
-        fetch(
-          "https://todo-list-6e54e-default-rtdb.firebaseio.com/users.json",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(this.user),
-          }
-        ).catch((error) => {
-          console.error("Error:", error);
-        });
-      }
-
-      // this.user.name = null;
-      // this.user.email = null;
-      // this.user.password = null;
-      // this.rePassword = null;
-    },
-    checkIFnewUser() {
       fetch("https://todo-list-6e54e-default-rtdb.firebaseio.com/users.json")
-        .then((response) => response.json())
-        .then((data) => {
-          for (let id in data) {
-            if (this.user.name == data[id].name) {
-              this.error = "this username has been used before.";
+        .then((res) => res.json())
+        .then((res) => {
+          for (let id in res) {
+            if (res[id].name == this.user.name) {
+              this.error = "this username has been used before";
               return false;
-            } else if (this.user.email == data[id].email) {
-              this.error = "this email has been used before.";
+            } else if (res[id].email == this.user.email) {
+              this.error = "this email has been used before";
               return false;
             }
           }
+          fetch(
+            "https://todo-list-6e54e-default-rtdb.firebaseio.com/users.json",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(this.user),
+            }
+          );
+          localStorage.setItem("user", JSON.stringify(this.user));
+          this.user = {
+            name: "",
+            email: null,
+            password: null,
+            tasks: ["Hi I'm the 1st inCompleted Task"],
+            doneTasks: ["Hi I'm the 1st Completed Task"],
+          };
+          this.rePassword = null;
+          this.$router.push({ path: "/taskList" });
         });
-
-      return true;
     },
   },
 };
@@ -143,7 +136,5 @@ export default {
 <style scoped>
 input {
   @apply px-4 py-2 rounded-md text-black;
-}
-.error {
 }
 </style>

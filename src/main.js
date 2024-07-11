@@ -8,13 +8,13 @@ import Home from "./components/Home.vue";
 import TaskList from "./components/UI/TaskList.vue";
 const routes = [
   {
-    path: "/home",
+    path: "/",
     component: Home,
     name: "Home",
   },
   {
     path: "/:catchAll(.*)",
-    redirect: "/home",
+    redirect: "/",
   },
   {
     path: "/TaskList",

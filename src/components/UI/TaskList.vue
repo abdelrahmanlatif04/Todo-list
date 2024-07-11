@@ -1,6 +1,6 @@
 <template>
   <h1
-    class="text-6xl text-center relative tracking-widest font-semibold text-gray-500 pt-10 before:absolute before:-bottom-10 before:tracking-wide before:text-orange-500 before:left-1/2 before:text-lg before:-translate-x-1/2 before:w-full;"
+    class="text-6xl text-center relative tracking-widest font-semibold text-gray-500 pt-10 before:absolute before:-bottom-10 before:tracking-wide before:text-orange-500 before:left-1/2 before:text-lg before:-translate-x-1/2 before:w-full"
   >
     TODO APP
   </h1>
@@ -9,18 +9,18 @@
     class="relative top-20 min-w-80 max-w-[600px] w-3/5 left-1/2 -translate-x-1/2 flex flex-col gap-2"
   >
     <Task
-      v-for="(task, i) in tasks"
+      v-for="(task, i) in user.tasks"
       :key="task"
       :i="i"
-      :tasks="tasks"
+      :tasks="user.tasks"
       @deleteTask="deleteTask"
       @taskClicked="completeTask"
     />
     <Task
-      v-for="(task, i) in comTasks"
+      v-for="(task, i) in user.doneTasks"
       :key="task"
       :i="i"
-      :tasks="comTasks"
+      :tasks="user.doneTasks"
       @deleteTask="deleteTask"
       @taskClicked="inCompleteTask"
       :state="'completed'"
@@ -41,8 +41,6 @@ export default {
         tasks: [],
         doneTasks: [],
       },
-      tasks: [],
-      comTasks: [],
     };
   },
   created() {
@@ -51,31 +49,22 @@ export default {
   methods: {
     addTask(val) {
       if (val) {
-        this.tasks.push(val);
+        this.user.tasks.push(val);
         this.storeTasks();
       }
     },
     bringDataBack() {
-      let completedTasks = JSON.parse(localStorage.getItem("completed tasks"));
-      let inCompletedTasks = JSON.parse(
-        localStorage.getItem("incompleted tasks")
-      );
-
-      if (completedTasks && completedTasks.length > 2) {
-        this.comTasks = completedTasks;
-      }
-      if (inCompletedTasks && inCompletedTasks.length > 2) {
-        this.tasks = inCompletedTasks;
-      }
+      this.user = JSON.parse(localStorage.getItem("user"));
     },
+
     completeTask(i) {
-      this.comTasks.push(this.tasks[i]);
-      this.deleteTask(this.tasks, i);
+      this.user.doneTasks.push(this.user.tasks[i]);
+      this.deleteTask(this.user.tasks, i);
       this.storeTasks();
     },
     inCompleteTask(i) {
-      this.tasks.push(this.comTasks[i]);
-      this.deleteTask(this.comTasks, i);
+      this.user.tasks.push(this.user.doneTasks[i]);
+      this.deleteTask(this.user.doneTasks, i);
       this.storeTasks();
     },
 
@@ -85,8 +74,9 @@ export default {
     },
 
     storeTasks() {
-      localStorage.setItem("incompleted tasks", JSON.stringify(this.tasks));
-      localStorage.setItem("completed tasks", JSON.stringify(this.comTasks));
+      fetch("https://todo-list-6e54e-default-rtdb.firebaseio.com/users.json");
+      localStorage.setItem("tasks", JSON.stringify(this.user.tasks));
+      localStorage.setItem("done tasks", JSON.stringify(this.user.doneTasks));
     },
   },
   components: { inputField, Task },

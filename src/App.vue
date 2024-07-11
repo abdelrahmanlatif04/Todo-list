@@ -1,9 +1,9 @@
 <template>
-  <div class="flex gap-3 absolute z-10">
-    <router-link :to="{ name: 'Home' }">Home</router-link> |
-    <router-link :to="{ name: 'TaskList' }">Task List</router-link> |
-    <router-link :to="{ name: 'signIn' }">sign in</router-link> |
-    <router-link :to="{ name: 'signUp' }">sign up</router-link>
+  <div class="flex gap-3 z-20 absolute">
+    <router-link to="/">Home</router-link>|
+    <router-link to="/signUp">Sign up</router-link>|
+    <router-link to="/signIn">Sign In</router-link>|
+    <router-link to="/taskList">Tasks list</router-link>
   </div>
   <router-view></router-view>
 </template>
@@ -12,7 +12,7 @@
 export default {
   data() {
     return {
-      user: {},
+      data: null,
     };
   },
   created() {
@@ -25,7 +25,7 @@ export default {
         {}
       )
         .then((res) => res.json())
-        .then((res) => console.log(res));
+        .then((res) => (this.data = res));
     },
   },
 };

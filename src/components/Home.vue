@@ -15,7 +15,7 @@
       </p>
       <div class="w-full flex justify-center md:justify-start relative gap-10">
         <router-link to="/signIn">Sign In </router-link>
-        <router-link :to="{ path: '/TaskList' }">Use as guest</router-link>
+        <router-link to="/taskList">Use as guest</router-link>
       </div>
     </div>
     <img class="w-4/5 md:w-1/3" src="../assets/to-do-list.png" alt="" />
