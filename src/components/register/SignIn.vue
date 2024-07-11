@@ -42,6 +42,6 @@ export default {
 
 <style>
 input {
-  @apply px-4 py-2 rounded-md text-gray-200;
+  @apply px-4 py-2 rounded-md;
 }
 </style>

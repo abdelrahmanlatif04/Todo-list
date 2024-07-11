@@ -14,7 +14,7 @@
       :i="i"
       :tasks="tasks"
       @deleteTask="deleteTask"
-      @completeTask="completeTask"
+      @taskClicked="completeTask"
     />
     <Task
       v-for="(task, i) in comTasks"
@@ -22,7 +22,7 @@
       :i="i"
       :tasks="comTasks"
       @deleteTask="deleteTask"
-      @completeTask="completeTask"
+      @taskClicked="inCompleteTask"
       :state="'completed'"
     />
   </div>
@@ -69,11 +69,14 @@ export default {
       }
     },
     completeTask(i) {
-      if (this.tasks[i]) {
-        this.comTasks.push(this.tasks[i]);
-        this.deleteTask(this.tasks, i);
-        this.storeTasks();
-      }
+      this.comTasks.push(this.tasks[i]);
+      this.deleteTask(this.tasks, i);
+      this.storeTasks();
+    },
+    inCompleteTask(i) {
+      this.tasks.push(this.comTasks[i]);
+      this.deleteTask(this.comTasks, i);
+      this.storeTasks();
     },
 
     deleteTask(arr, i) {

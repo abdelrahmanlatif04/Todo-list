@@ -8,7 +8,28 @@
   <router-view></router-view>
 </template>
 
-<script></script>
+<script>
+export default {
+  data() {
+    return {
+      user: {},
+    };
+  },
+  created() {
+    this.getUsers();
+  },
+  methods: {
+    getUsers() {
+      fetch(
+        "https://todo-list-6e54e-default-rtdb.firebaseio.com/users.json",
+        {}
+      )
+        .then((res) => res.json())
+        .then((res) => console.log(res));
+    },
+  },
+};
+</script>
 
 <style>
 * {

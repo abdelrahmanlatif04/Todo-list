@@ -6,7 +6,7 @@
           ? 'before:bg-gradient-to-tl before:from-orange-300 before:to-gray-300'
           : 'before:bg-gray-200'
       }`"
-      @click="completeTask(i)"
+      @click="taskClicked(i)"
     >
       {{ tasks[i] }}
     </div>
@@ -22,8 +22,8 @@
 export default {
   props: ["tasks", "i", "state"],
   methods: {
-    completeTask(i) {
-      this.$emit("completeTask", i);
+    taskClicked(i) {
+      this.$emit("taskClicked", i);
     },
     deleteTask(tasks, i) {
       this.$emit("deleteTask", tasks, i);
